@@ -1,21 +1,36 @@
-from django.shortcuts import render
-from django.http import HttpResponseRedirect
-from .models import todoItem
+from django.shortcuts import render,redirect
+from .models import List
+from .forms import ListForm
+from django.contrib import messages
 
 # Create your views here.
+def todoView(request):
+    if request.method == 'POST':
+        form = ListForm(request.POST or None)
 
-def todoView (request):
-    all_todo_items = todoItem.objects.all()
-    return render(request, 'todo.html',{'all_items': all_todo_items})
+        if form.is_valid():
+            form.save()
+            all_items = List.objects.all
+            messages.success(request, ('Item has been added.'))
+            return render(request, 'todo.html', {'all_items': all_items})
+    else:
+        all_items = List.objects.all
+        return render(request, 'todo.html', {'all_items': all_items})
 
+def toDelete(request, list_id):
+    item = List.objects.get(pk=list_id)
+    item.delete()
+    messages.success(request, ('Item has been deleted'))
+    return redirect('home')
 
-def addTodo(request):
-    new_item = todoItem(content = request.POST['content'])
-    new_item.save()
-    return HttpResponseRedirect('/todo/')
+def crossOut(request, list_id):
+    item = List.objects.get(pk=list_id)
+    item.completed = True
+    item.save()
+    return redirect('home')
 
-def deleteTodo(request, todo_id):
-    item_to_delete = todoItem.objects.get(id = todo_id)
-    item_to_delete.delete()
-    return HttpResponseRedirect('/todo/')
-
+def unCrossOut(request, list_id):
+    item = List.objects.get(pk=list_id)
+    item.completed = False
+    item.save()
+    return redirect('home')  
