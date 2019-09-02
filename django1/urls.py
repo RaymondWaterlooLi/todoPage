@@ -24,4 +24,5 @@ urlpatterns = [
     path('delete/<list_id>', views.toDelete, name="delete"),
     path('cross/<list_id>', views.crossOut, name="cross"),
     path('uncross/<list_id>', views.unCrossOut, name="uncross"),
+    path('todo/clear', views.clear, name="clear"),
 ]

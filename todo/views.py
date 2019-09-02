@@ -34,3 +34,8 @@ def unCrossOut(request, list_id):
     item.completed = False
     item.save()
     return redirect('home')  
+
+def clear(request):
+    List.objects.all().delete()
+    messages.success(request, ('All items have been deleted.'))
+    return redirect('home') 
